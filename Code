@@ -1,0 +1,34 @@
+import json
+from datetime import datetime
+from collections import defaultdict
+
+def load_facebook_posts_from_jsonl(file_path):
+    posts = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            post = json.loads(line)
+            posts.append(post)
+    return posts
+
+def calculate_post_frequency(posts):
+    frequency = defaultdict(int)
+
+    for post in posts:
+        created_time = datetime.strptime(post['created_time'], "%Y-%m-%dT%H:%M:%S%z")
+        hour = created_time.hour
+        frequency[hour] += 1
+
+    return frequency
+
+# Provide the path to your JSONL file
+file_path = "Set_A.jsonl"
+
+# Load the Facebook posts from the JSONL file
+posts = load_facebook_posts_from_jsonl(file_path)
+
+# Calculate the post frequency
+post_frequency = calculate_post_frequency(posts)
+
+# Print the results
+for hour, count in post_frequency.items():
+    print(f"Hour: {hour:02d}  Count: {count}")
